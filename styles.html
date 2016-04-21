@@ -1,0 +1,187 @@
+<style is="custom-style">
+  /*Color variables*/
+  :root {
+    --polytipe-bg-color: #303030;
+    --polytipe-toolbar-color: #212121;
+    --polytipe-accent-color: #2AB767;
+    --polytipe-secondary-color: #FFEB3B;
+    --sidebar-bg-color: #1A1A1A;
+
+    --app-bg-color: #E5E5E5;
+    --app-primary-color: var(--paper-light-blue-500);
+    --app-accent-color: var(--paper-red-400);
+  }
+
+  * {
+		-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	}
+
+  html{
+    font-family: "Roboto", 'Helvetica Neue';
+    background-color: var(--app-bg-color);
+  }
+
+  body.main{
+    background-color: var(--polytipe-bg-color);
+  }
+
+
+  /*Default typography styles*/
+  .paper-font-display4 {@apply(--paper-font-display4);}
+  .paper-font-display3 {@apply(--paper-font-display3);}
+  .paper-font-display2 {@apply(--paper-font-display2);}
+  .paper-font-display1 {@apply(--paper-font-display1);}
+  .paper-font-headline {@apply(--paper-font-headline);}
+  .paper-font-title {@apply(--paper-font-title);}
+  .paper-font-subhead {@apply(--paper-font-subhead);}
+  .paper-font-body2 {@apply(--paper-font-body1);}
+  .paper-font-body1 {@apply(--paper-font-body1);}
+  .paper-font-caption {@apply(--paper-font-caption);}
+  .paper-font-menu {@apply(--paper-font-menu);}
+  .paper-font-button {@apply(--paper-font-button);}
+
+  #app_container{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    min-height: 800px;
+  }
+  #app_iframe{
+    width: 360px;
+    height: 640px;
+    background-color: var(--app-bg-color);
+    border: none;
+    opacity: 0.05;
+    transition: opacity 0.5s ease;
+  }
+
+  .element_icon{
+    margin-right: 20px;
+  }
+  paper-menu-button{
+    padding: 0;
+  }
+  paper-item{
+    cursor: pointer;
+  }
+  paper-toast{
+    background-color: #424242;
+  }
+  .back_icon{
+    margin-right: 24px;
+  }
+  #iframe_loading_spinner{
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 45px;
+    height: 45px;
+  }
+
+  .screen_view_toolbar{
+    background-color: var(--polytipe-toolbar-color);
+  }
+
+  paper-icon-button{
+    --paper-icon-button-ink-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .link{
+    color: inherit;
+    text-decoration: none;
+  }
+
+  paper-tooltip{
+    text-align:center;
+    --paper-tooltip:{
+      font-size: 12px;
+    }
+  }
+
+  .create_repo_description{
+    margin-top: 28px;
+  }
+
+  .modal_dialog{
+    width: 320px;
+  }
+  .modal_dialog paper-input{
+    margin-top: 15px;
+    --paper-input-container-focus-color: var(--polytipe-accent-color);
+  }
+  .modal_dialog paper-textarea{
+    margin-top: 10px;
+    --paper-input-container-focus-color: var(--polytipe-accent-color);
+  }
+  .modal_dialog .buttons{
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  .accept_button{
+    color: var(--polytipe-accent-color);
+    font-weight: 700;
+  }
+  .cancel_button{
+    color: #777;
+  }
+
+  /* User badge */
+
+  #user_badge{
+    padding: 5px 10px;
+    position: fixed;
+    left: 30px;
+    bottom: 30px;
+    cursor: pointer;
+  }
+  #avatar{
+    --iron-image-width: 100%;
+    --iron-image-height: 100%;
+  }
+
+  @media (max-width: 1500px) {
+    #app_container{
+      min-height: 700px;
+    }
+    #test{
+      transform: scale(0.8);
+    }
+	}
+
+  @media (max-width: 850px) {
+    #test{
+      transform: scale(0.8);
+    }
+	}
+
+  @media (max-width: 600px) {
+    #app_container{
+      min-height: 400px;
+    }
+    #test{
+      transform: scale(1.0);
+      width: 100%;
+      height: 100%;
+    }
+    #app_iframe{
+      width: 100%;
+      height: 100%;
+    }
+    #editor_toolbar{
+      display: none;
+    }
+    #user_badge{
+      display: none;
+    }
+
+  }
+
+</style>

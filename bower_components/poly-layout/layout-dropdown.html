@@ -1,0 +1,60 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
+<dom-module id="layout-dropdown">
+
+  <style>
+    paper-input{
+
+    }
+    paper-menu{
+      overflow-x: hidden;
+    }
+    paper-item{
+      position: relative;
+      min-height: 32px;
+      width: 177px;
+    }
+    paper-dropdown-menu {
+      width: 100%;
+      --paper-input-container-focus-color: var(--polytipe-accent-color);
+      --paper-input-container-input: {
+        color: white;
+      }
+    }
+  </style>
+
+  <template>
+    <paper-dropdown-menu label="{{label}}" value="{{value}}">
+      <paper-menu class="dropdown-content" selected="{{selectedIndex}}">
+        <template is="dom-repeat" items="{{items}}">
+          <paper-item>{{item}}</paper-item>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
+  </template>
+  <script>
+    Polymer({
+      is: 'layout-dropdown',
+      properties:{
+        label:{
+          type: String,
+          reflectToAttribute: true
+        },
+        items:{
+          type: Array,
+          reflectToAttribute: true
+        },
+        value:{
+          type: String,
+          reflectToAttribute: true
+        }
+      },
+      ready: function () {
+      }
+    });
+  </script>
+</dom-module>

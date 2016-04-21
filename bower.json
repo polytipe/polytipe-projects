@@ -1,0 +1,18 @@
+{
+  "name": "polytipe-projects",
+  "homepage": "https://github.com/polytipe/polytipe-projects",
+  "authors": [
+    "Polytipe Team"
+  ],
+  "description": "Repositorio base para proyectos de Polytipe.",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -1,0 +1,121 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../styles.html">
+
+<dom-module id="poly-checkbox">
+
+  <style>
+    :host {
+      display: inline-block;
+      padding: 5px;
+      background-color: transparent !important;
+      color: transparent !important;
+    }
+    paper-checkbox{
+      --paper-checkbox-checked-color: var(--app-accent-color);
+      --paper-checkbox-checked-ink-color: var(--app-accent-color);
+      background-color: transparent !important;
+      color: transparent !important;
+    }
+  </style>
+
+  <template>
+    <paper-checkbox id="checkbox" checked="{{checked}}">{{text}}</paper-checkbox>
+  </template>
+  <script>
+    Polymer({
+      is: 'poly-checkbox',
+      listeners: {
+        'tap': 'focus'
+      },
+      properties:{
+        text:{
+          type: String,
+          value: "Ítem",
+          reflectToAttribute: true
+        },
+        checked:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        flex:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: "_flexChanged"
+        },
+        link:{
+          type: String,
+          value: "",
+          reflectToAttribute: true
+        }
+      },
+      ready: function () {
+        this.refreshStyles();
+      },
+      focus: function(event) {
+        if(this.link){
+          this._goto();
+        }
+        this.getStyles();
+        this.fire("elementSelection");
+        this.toggleClass('outlined_element', true);
+        event.stopPropagation();
+      },
+      unfocus: function() {
+        this.toggleClass('outlined_element', false);
+      },
+      _flexChanged: function() {
+        this.toggleClass('flex', this.flex);
+      },
+      _goto: function(){
+        document.querySelector("iron-pages").selected = this.link;
+      },
+
+      getStyles: function(){
+        this.width = getComputedStyle(this.$.checkbox)["width"];
+        this.height = getComputedStyle(this.$.checkbox)["height"];
+        this['background-color'] = this.rgb2hex(this.style.backgroundColor);
+        this.color = this.rgb2hex(this.style.color);
+        this.display = getComputedStyle(this.$.checkbox)["display"];
+
+        var values = ["-top","-right","-bottom","-left"];
+        var margin = [];
+        var padding = [];
+        for (var j = 0; j < values.length; j++) {
+          margin.push(getComputedStyle(this.$.checkbox)["margin"+values[j]]);
+          padding.push(getComputedStyle(this.$.checkbox)["padding"+values[j]]);
+        }
+        this.margin = margin.join(' ');
+        this.padding = padding.join(' ');
+      },
+      rgb2hex: function(rgb){
+       rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+       return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+      },
+      refreshStyles: function (property, value) {
+        if(this.style.backgroundColor != "transparent"){
+          this.$.checkbox.customStyle['--paper-checkbox-checked-color'] = this.style.backgroundColor;
+          this.updateStyles();
+        }
+        if(this.style.color != "transparent"){
+          this.$.checkbox.customStyle['--paper-checkbox-label-color'] = this.style.color;
+          this.updateStyles();
+        }
+
+        if(property=="background-color"){
+          this.$.checkbox.customStyle['--paper-checkbox-checked-color'] = value;
+          this.updateStyles();
+        }else if(property=="color"){
+          this.$.checkbox.customStyle['--paper-checkbox-label-color'] = value;
+          this.updateStyles();
+        }
+        this.style[property] = value;
+      }
+    });
+  </script>
+</dom-module>

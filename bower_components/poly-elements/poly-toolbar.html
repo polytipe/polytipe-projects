@@ -1,0 +1,144 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../../styles.html">
+
+<link rel="import" href="../poly-elements/poly-icon-button.html">
+<link rel="import" href="../poly-elements/poly-label.html">
+
+<dom-module id="poly-toolbar">
+  <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning"></style>
+
+  <style>
+    :host {
+      display: block;
+      width: 100%;
+      height: 56px;
+      box-sizing: border-box;
+      background-color: var(--app-primary-color);
+      color: #fff;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      padding: 0 16px;
+      z-index: 1;
+      @apply(--shadow-transition);
+    }
+    .outlined_element{
+      box-sizing: border-box;
+      border: 2px solid yellow;
+    }
+    :host.fixed{
+      position: sticky !important;
+      top: 0px !important;
+      @apply(--shadow-elevation-2dp);
+    }
+  </style>
+
+  <template>
+    <content></content>
+  </template>
+  <script>
+    Polymer({
+      is: 'poly-toolbar',
+      listeners: {
+        'tap': 'focus'
+      },
+      properties:{
+        fixed:{
+          type: Boolean,
+          value: false,
+          observer: "_fixedChanged",
+          reflectToAttribute: true
+        },
+        flex:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: "_flexChanged"
+        }
+      },
+      addElements: function () {
+        var el = document.createElement("poly-icon-button");
+        el.icon = "menu";
+        el.id = this.id + "A";
+        el.style.marginRight = "20px";
+        Polymer.dom(this).appendChild(el);
+
+        var el = document.createElement("poly-label");
+        el.text = "Aplicación";
+        el.id = this.id + "B";
+        el.flex = true;
+        Polymer.dom(this).appendChild(el);
+
+        var el = document.createElement("poly-icon-button");
+        el.icon = "refresh";
+        el.id = this.id + "C";
+        Polymer.dom(this).appendChild(el);
+
+        var el = document.createElement("poly-icon-button");
+        el.icon = "search";
+        el.id = this.id + "D";
+        Polymer.dom(this).appendChild(el);
+      },
+      ready: function () {
+        this.refreshStyles();
+        //If it already has elements inside stop
+        if(this.children.length > 0){
+          return;
+        }
+        //Add elements with async to wait for the ID to be correctly appended
+        this.async(function () {
+          this.addElements();
+        },10);
+      },
+      focus: function(event) {
+        this.getStyles();
+        this.fire("elementSelection");
+        this.toggleClass('outlined_element', true);
+      },
+      unfocus: function() {
+        this.toggleClass('outlined_element', false);
+      },
+      _flexChanged: function() {
+        this.toggleClass('flex', this.flex);
+      },
+
+      _fixedChanged: function () {
+        if(this.fixed) {
+          this.toggleClass("fixed", true);
+        }else{
+          this.toggleClass("fixed", false);
+        }
+      },
+
+      getStyles: function(){
+        this.width = getComputedStyle(this)["width"];
+        this.height = getComputedStyle(this)["height"];
+        this['background-color'] = this.rgb2hex(getComputedStyle(this)["background-color"]);
+        this.color = this.rgb2hex(getComputedStyle(this)["color"]);
+        this.display = getComputedStyle(this)["display"];
+
+        var values = ["-top","-right","-bottom","-left"];
+        var margin = [];
+        var padding = [];
+        for (var j = 0; j < values.length; j++) {
+          margin.push(getComputedStyle(this)["margin"+values[j]]);
+          padding.push(getComputedStyle(this)["padding"+values[j]]);
+        }
+        this.margin = margin.join(' ');
+        this.padding = padding.join(' ');
+      },
+      rgb2hex: function(rgb){
+       rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+       return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+      },
+      refreshStyles: function (property, value) {
+        this.style[property] = value;
+      }
+    });
+  </script>
+</dom-module>

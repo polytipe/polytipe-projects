@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <title>My App | Polytipe</title>
+  <meta name="description" content="">
+
+  <!-- No zooming! -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <!-- Chrome / Android -->
+  <meta id="bar" name="theme-color" content="">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="black">
+  <link rel="icon" href="images/touch/icon-128x128.png">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Tile color for Win8/10 -->
+  <meta name="msapplication-TileColor" content="">
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="My App">
+  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+
+  <!-- Web Components -->
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="elements.html">
+  <link rel="import" href="styles.html">
+  <link rel="import" href="iron-flex.html">
+
+</head>
+
+<body unresolved class="fullbleed">
+  <paper-drawer-panel id="drawer_panel" disable-swipe force-narrow>
+    <paper-header-panel drawer mode="seamed">
+      <div id="drawer_content"></div>
+    </paper-header-panel>
+    <paper-header-panel main mode="seamed">
+      <iron-pages id="app_content" attr-for-selected="id"></iron-pages>
+    </paper-header-panel>
+  </paper-drawer-panel>
+
+  <script type="text/javascript">
+    window.addEventListener('WebComponentsReady', function(e) {
+      parent.iframe_ready();
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../../styles.html">
+
+<dom-module id="poly-base">
+
+  <style>
+    :host {
+      display: inline-block;
+    }
+  </style>
+
+  <template>
+    <paper-button id="button" raised="{{raised}}">
+      <template is="dom-if" if="{{hasIcon}}">
+        <iron-icon icon="{{icon}}"></iron-icon>
+      </template>
+      {{text}}
+    </paper-button>
+  </template>
+  <script>
+    Polymer({
+      is: 'poly-base',
+      listeners: {
+        'tap': 'focus'
+      },
+      properties:{
+        text:{
+          type: String,
+          value: "Botón",
+          reflectToAttribute: true
+        },
+        icon:{
+          type: String,
+          value: "",
+          observer: "_iconChanged",
+          reflectToAttribute: true
+        },
+        raised:{
+          type: Boolean,
+          value: true,
+          reflectToAttribute: true
+        },
+        flex:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: "_flexChanged"
+        },
+        link:{
+          type: String,
+          value: "",
+          reflectToAttribute: true
+        }
+      },
+      ready: function () {
+      },
+      focus: function(event) {
+        if(this.preview_mode){
+          if(this.link){
+            this._goto();
+          }
+        }
+        this.getStyles();
+        this.fire("elementSelection");
+        this.toggleClass('outlined_element', true);
+        event.stopPropagation();
+      },
+      unfocus: function() {
+        this.toggleClass('outlined_element', false);
+      },
+      _flexChanged: function() {
+        this.toggleClass('flex', this.flex);
+      },
+      _goto: function(){
+        document.querySelector("iron-pages").selected = this.link;
+      },
+
+
+      getStyles: function(){
+        this.width = getComputedStyle(this.$.button)["width"];
+        this.height = getComputedStyle(this.$.button)["height"];
+        this.background = this.rgb2hex(getComputedStyle(this.$.button)["background-color"]);
+        this.color = this.rgb2hex(getComputedStyle(this.$.button)["color"]);
+        this.display = getComputedStyle(this.$.button)["display"];
+
+        var values = ["-top","-right","-bottom","-left"];
+        var margin = [];
+        var padding = [];
+        for (var j = 0; j < values.length; j++) {
+          margin.push(getComputedStyle(this.$.button)["margin"+values[j]]);
+          padding.push(getComputedStyle(this.$.button)["padding"+values[j]]);
+        }
+        this.margin = margin.join(' ');
+        this.padding = padding.join(' ');
+      },
+      rgb2hex: function(rgb){
+       rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+       return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+      },
+      refreshStyles: function (property, value) {
+        this.$.button.style[property] = value;
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <title>project_name | Polytipe</title>
+  <meta name="description" content="">
+
+  <!-- No zooming! -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <!-- Chrome / Android -->
+  <meta id="bar" name="theme-color" content="#212121">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#212121">
+  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+  <link rel="icon" sizes="72x72" href="images/touch/icon-72x72.png">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Tile color for Win8/10 -->
+  <meta name="msapplication-TileColor" content="">
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="My App">
+  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+
+  <!-- Twitter card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@alejost848">
+	<meta name="twitter:creator" content="@alejost848">
+	<meta name="twitter:title" content="Polytipe">
+	<meta name="twitter:description" content="Este es un prototipo creado por usuario utilizando Polytipe. Conoce más en polytipe.me">
+	<meta name="twitter:image" content="http://polytipe.github.io/polytipe/images/cover.png">
+
+  <!-- Facebook card -->
+	<meta property="og:title" content="Polytipe">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://usuario.github.io/polytipe-projects">
+	<meta property="og:description" content="Este es un prototipo creado por usuario utilizando Polytipe. Conoce más en polytipe.me">
+	<meta property="og:image" content="http://polytipe.github.io/polytipe/images/cover.png">
+
+  <!-- Web Components -->
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="github.js"></script>
+  <script src="github.bundle.min.js"></script>
+
+  <!-- Google Analytics Tracking -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'tracking_id', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+  <link rel="import" href="elements.html">
+  <link rel="import" href="styles.html">
+  <link rel="import" href="iron-flex.html">
+</head>
+
+<body class="fullbleed main">
+  <template id="app" is="dom-bind">
+    <iron-location path="{{path}}" hash="{{hash}}" query="{{query}}"></iron-location>
+    <paper-drawer-panel id="drawer_panel" disable-swipe force-narrow>
+      <paper-header-panel drawer mode="seamed">
+        <div id="drawer_content"></div>
+      </paper-header-panel>
+      <paper-header-panel main mode="seamed">
+        <paper-toolbar id="editor_toolbar" class="screen_view_toolbar">
+          <div>
+            <a class="link" tabindex="-1" href="https://polytipe.me" target="_blank">
+              <paper-icon-button class="back_icon" icon="polytipe-icons:icon"></paper-icon-button>
+            </a>
+            <paper-tooltip offset="0" animation-delay="0">Ir a Polytipe</paper-tooltip>
+          </div>
+          <div class="paper-font-title">Prototipo project_name</div>
+          <span class="flex"></span>
+          <div>
+            <a class="link" tabindex="-1" href="https://github.com/{{username}}/polytipe-projects/tree/project_name" target="_blank">
+              <paper-icon-button icon="polytipe-icons:github"></paper-icon-button>
+            </a>
+            <paper-tooltip offset="0" animation-delay="0">Ver en Github</paper-tooltip>
+          </div>
+          <div>
+            <paper-icon-button icon="feedback" onclick="promptIssueDialog()"></paper-icon-button>
+            <paper-tooltip offset="0" animation-delay="0">Enviar feedback</paper-tooltip>
+          </div>
+        </paper-toolbar>
+
+        <div id="app_container" class="layout vertical center-center">
+          <paper-spinner id="iframe_loading_spinner" active></paper-spinner>
+          <iframe id="app_iframe" src="prototype.html"></iframe>
+          <paper-chip id="user_badge" animated>
+            <iron-image class="icon" id="avatar" src="avatar_url" preload fade></iron-image>
+            <h1>{{username}}</h1>
+            <h2>Creado con Polytipe</h2>
+          </paper-chip>
+        </div>
+      </paper-header-panel>
+    </paper-drawer-panel>
+
+    <firebase-auth
+      id="firebaseAuth"
+      location="https://polytipe.firebaseio.com"
+      provider="{{provider}}"
+      redirect
+      user="{{signed_user}}"
+      params='{"scope": "public_repo"}'>
+    </firebase-auth>
+
+    <paper-dialog id="sign_in_dialog" class="modal_dialog" modal entry-animation="slide-from-bottom-animation" exit-animation="fade-out-animation">
+      <div class="layout horizontal">
+        <h2 class="flex">Iniciar sesión</h2>
+        <paper-spinner id="sign_in_spinner"></paper-spinner>
+      </div>
+      <div class="create_repo_description paper-font-subhead">
+        Al iniciar sesión aceptas a que recopilemos información acerca
+        de tu visita y de cómo interactúas con el prototipo. Conoce
+        más en nuestras <strong>políticas de privacidad.</strong>
+      </div>
+      <div class="buttons layout vertical end">
+        <paper-button class="accept_button" onclick="sign_in('github')" noink autofocus>Iniciar con Github</paper-button>
+        <paper-button class="cancel_button" onclick="sign_in('anonymous')" noink>Iniciar como invitado</paper-button>
+      </div>
+    </paper-dialog>
+
+    <paper-dialog id="add_issue_dialog" class="modal_dialog" with-backdrop entry-animation="slide-from-bottom-animation" exit-animation="fade-out-animation">
+      <div class="layout horizontal">
+        <h2 class="flex">Enviar feedback</h2>
+        <paper-spinner id="add_issue_spinner"></paper-spinner>
+      </div>
+      <paper-input id="add_issue_input" label="Título" always-float-label value="{{issue_title}}" autofocus required error-message="No puede dejarse en blanco"></paper-input>
+      <paper-textarea rows="3" max-rows="3" type="text" always-float-label id="add_issue_body_input" label="Mensaje" value="{{issue_body}}" autofocus required error-message="No puede dejarse en blanco"></paper-textarea>
+      <div class="buttons">
+        <paper-button class="cancel_button" noink dialog-dismiss>Cancelar</paper-button>
+        <paper-button class="accept_button" onclick="createIssue()" noink autofocus>Enviar</paper-button>
+      </div>
+    </paper-dialog>
+
+    <paper-toast id="sign_in_success_toast" duration="3500" text="Se ha iniciado sesión correctamente"></paper-toast>
+    <paper-toast id="sign_in_fail_toast" duration="5000" text="Ocurrió un error al iniciar sesión">
+      <paper-button noink onclick="sign_in()">Reintentar</paper-button>
+    </paper-toast>
+    <paper-toast id="issue_success_toast" duration="3500" text="Gracias por enviar tus comentarios"></paper-toast>
+    <paper-toast id="issue_fail_toast" duration="3500" text="Los comentarios están deshabilitados"></paper-toast>
+
+  </template>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

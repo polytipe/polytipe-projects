@@ -1,0 +1,128 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../../styles.html">
+
+<dom-module id="poly-fab">
+
+  <style>
+    :host {
+      display: inline-block;
+      background-color: transparent !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    paper-fab{
+      background-color: var(--app-accent-color);
+      color: white;
+    }
+    :host.bottom{
+      position: fixed !important;
+      z-index: 1 !important;
+      bottom: 17px !important;
+      right: 17px !important;
+    }
+  </style>
+
+  <template>
+    <paper-fab id="fab" icon="{{icon}}" mini="{{mini}}"></paper-fab>
+  </template>
+  <script>
+    Polymer({
+      is: 'poly-fab',
+      listeners: {
+        'tap': 'focus'
+      },
+      properties:{
+        icon:{
+          type: String,
+          value: "add",
+          reflectToAttribute: true
+        },
+        mini:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        float:{
+          type: Boolean,
+          value: true,
+          observer: "_floatChanged",
+          reflectToAttribute: true
+        },
+        flex:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: "_flexChanged"
+        },
+        link:{
+          type: String,
+          value: "",
+          reflectToAttribute: true
+        }
+      },
+      ready: function () {
+        this.refreshStyles();
+      },
+      focus: function(event) {
+        if(this.link){
+          this._goto();
+        }
+        this.getStyles();
+        this.fire("elementSelection");
+        this.toggleClass('outlined_element', true);
+        event.stopPropagation();
+
+      },
+      unfocus: function() {
+        this.toggleClass('outlined_element', false);
+      },
+      _flexChanged: function() {
+        this.toggleClass('flex', this.flex);
+      },
+
+      _floatChanged:function () {
+        if (this.float) {
+          this.toggleClass("bottom", true);
+        }else{
+          this.toggleClass("bottom", false);
+        }
+      },
+      _goto: function(){
+        document.querySelector("iron-pages").selected = this.link;
+      },
+
+
+      getStyles: function(){
+        this.width = getComputedStyle(this.$.fab)["width"];
+        this.height = getComputedStyle(this.$.fab)["height"];
+        this['background-color'] = this.rgb2hex(getComputedStyle(this.$.fab)["background-color"]);
+        this.color = this.rgb2hex(getComputedStyle(this.$.fab)["color"]);
+        this.display = getComputedStyle(this)["display"];
+
+        var values = ["-top","-right","-bottom","-left"];
+        var margin = [];
+        var padding = [];
+        for (var j = 0; j < values.length; j++) {
+          margin.push(getComputedStyle(this.$.fab)["margin"+values[j]]);
+          padding.push(getComputedStyle(this.$.fab)["padding"+values[j]]);
+        }
+        this.margin = margin.join(' ');
+        this.padding = padding.join(' ');
+      },
+      rgb2hex: function(rgb){
+       rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+       return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+      },
+      refreshStyles: function (property, value) {
+        this.style[property] = value;
+        this.$.fab.setAttribute('style', this.getAttribute('style'));
+      }
+    });
+  </script>
+</dom-module>

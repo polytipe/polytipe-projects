@@ -1,0 +1,131 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-tabs/paper-tabs.html">
+<link rel="import" href="../iron-pages/iron-pages.html">
+
+<dom-module id="poly-tabs">
+
+  <style>
+
+    :host {
+      display: block;
+      min-width: 100%;
+      box-sizing: border-box;
+    }
+
+    paper-tabs{
+      background-color: var(--app-primary-color);
+      --paper-tabs-selection-bar-color: yellow;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+  </style>
+
+  <template>
+    <paper-tabs id="tabs" selected="{{selected_tab}}">
+      <template is="dom-repeat" items="{{tabs}}">
+        <paper-tab>{{item.name}}</paper-tab>
+      </template>
+    </paper-tabs>
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'poly-tabs',
+      listeners: {
+        'click': 'focus'
+      },
+      properties: {
+        tabs:{
+          type: Array,
+          value: [{name: 'Tab 1'}, {name: 'Tab 2'}],
+          reflectToAttribute: true
+        },
+        selected_tab: {
+          type: Number,
+          value: 0,
+          observer: '_selected_tabChange',
+          reflectToAttribute: true
+        },
+        flex:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: "_flexChanged"
+        }
+
+      },
+      _selected_tabChange: function() {
+        this.fire("elementSelection");
+      },
+      ready: function() {
+        this.refreshStyles();
+        this.number = this.tabs.length;
+        this.min = 0;
+        this.max = this.number;
+      },
+      attached: function(){
+      },
+      addElement: function(){
+        if(this.number < 5){
+          this.number = this.number + 1;
+          this.max = this.number;
+          this.push("tabs", {name: 'Tab '+ this.number} );
+          this.fire("elementSelection");
+        }
+      },
+      removeElement: function(){
+        if(this.number > this.min){
+          this.number = this.number - 1;
+          this.max = this.number;
+          this.pop("tabs");
+          this.fire("elementSelection");
+        }
+      },
+      focus: function() {
+        this.getStyles();
+        this.fire("elementSelection");
+        this.toggleClass('outlined_element', true);
+
+      },
+      unfocus: function() {
+        this.toggleClass('outlined_element', false);
+      },
+      _flexChanged: function() {
+        this.toggleClass('flex', this.flex);
+      },
+
+      getStyles: function(){
+        this.width = getComputedStyle(this.$.tabs)["width"];
+        this.height = getComputedStyle(this.$.tabs)["height"];
+        this.background = this.rgb2hex(getComputedStyle(this.$.tabs)["background-color"]);
+        this.color = this.rgb2hex(getComputedStyle(this.$.tabs)["color"]);
+        this.display = getComputedStyle(this.$.tabs)["display"];
+
+        var values = ["-top","-right","-bottom","-left"];
+        var margin = [];
+        var padding = [];
+        for (var j = 0; j < values.length; j++) {
+          margin.push(getComputedStyle(this.$.tabs)["margin"+values[j]]);
+          padding.push(getComputedStyle(this.$.tabs)["padding"+values[j]]);
+        }
+        this.margin = margin.join(' ');
+        this.padding = padding.join(' ');
+      },
+      rgb2hex: function(rgb){
+       rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+       return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+      },
+      refreshStyles: function (property, value) {
+        this.style[property] = value;
+        this.$.tabs.setAttribute('style', this.getAttribute('style'));
+      }
+    });
+
+  </script>
+
+</dom-module>

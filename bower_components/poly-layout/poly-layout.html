@@ -1,0 +1,150 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="poly-layout">
+
+  <style>
+    :host {
+      display: block;
+      width: auto;
+      min-height: 45px;
+      box-sizing: border-box;
+      border: 1px solid #aaa;
+    }
+  </style>
+
+  <template>
+    <content></content>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'poly-layout',
+      listeners: {
+        'tap': 'focus'
+      },
+      properties:{
+        layout:{
+          type: String,
+          observer: "_layoutChanged",
+          reflectToAttribute: true
+        },
+        align:{
+          type: String,
+          observer: "_alignChanged",
+          reflectToAttribute: true
+        },
+        justify:{
+          type: String,
+          observer: "_justifyChanged",
+          reflectToAttribute: true
+        },
+        flex:{
+          type: String,
+          observer: "_flexChanged",
+          reflectToAttribute: true
+        },
+        wrap:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        reverse:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        }
+      },
+      ready: function () {
+        this._focused = false;
+        this.selector = [];
+        this.layoutDropdown = ["", "horizontal","vertical"];
+        this.alignDropdown = ["", "start","center", "end"];
+        this.justifyDropdown = ["", "start-justified","center-justified","end-justified","justified","around-justified"];
+        this.flexDropdown = ["", "flex-1","flex-2","flex-3","flex-4","flex-5","flex-6","flex-7","flex-8","flex-9","flex-10","flex-11","flex-12"];
+        this.toggleClass("layout", true);
+        this.computeStructure();
+      },
+      focus: function(event) {
+        this.getStyles();
+        this.fire("elementSelection");
+        this.toggleClass('outlined_element', true);
+        event.stopPropagation();
+      },
+      unfocus: function() {
+        this.toggleClass('outlined_element', false);
+      },
+      _layoutChanged: function () {
+        this.selector = this.layoutDropdown;
+        this._pChanged(this.layout);
+       },
+      _alignChanged: function () {
+        this.selector = this.alignDropdown;
+        this._pChanged(this.align);
+       },
+      _justifyChanged: function () {
+        this.selector = this.justifyDropdown;
+        this._pChanged(this.justify);
+       },
+      _flexChanged: function () {
+        this.selector = this.flexDropdown;
+        this._pChanged(this.flex);
+       },
+
+      _pChanged: function (p) {
+        if(this.selector != undefined){
+          for (var i = 0; i < this.selector.length; i++) {
+            if(this.selector[i] != ""){
+              if(this.selector[i] == p){
+                this.toggleClass(this.selector[i], true);
+              }else{
+                this.toggleClass(this.selector[i], false);
+              }
+            }
+          }
+        }
+      },
+      computeStructure: function(){
+        if(this.layout){
+          this.toggleClass(this.layout, true);
+        }
+        if(this.align){
+          this.toggleClass(this.align, true);
+        }
+        if(this.justify){
+          this.toggleClass(this.justify, true);
+        }
+        if(this.flex){
+          this.toggleClass(this.flex, true);
+        }
+      },
+      getStyles: function(){
+        this.width = getComputedStyle(this)["width"];
+        this.height = getComputedStyle(this)["height"];
+        this.background = this.rgb2hex(getComputedStyle(this)["background-color"]);
+        this.color = this.rgb2hex(getComputedStyle(this)["color"]);;
+        this.display = getComputedStyle(this)["display"];
+
+        var values = ["-top","-right","-bottom","-left"];
+        var margin = [];
+        var padding = [];
+        for (var j = 0; j < values.length; j++) {
+          margin.push(getComputedStyle(this)["margin"+values[j]]);
+          padding.push(getComputedStyle(this)["padding"+values[j]]);
+        }
+        this.margin = margin.join(' ');
+        this.padding = padding.join(' ');
+      },
+      rgb2hex: function(rgb){
+       rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+       return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+      },
+      refreshStyles: function (property, value) {
+        this.style[property] = value;
+      }
+    });
+  </script>
+</dom-module>
